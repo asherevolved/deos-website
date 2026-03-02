@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEOS — Under Construction</title>
+    <meta name="description" content="DEOS is coming soon. No rest. Just building.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ===== FULL-PAGE BACKGROUND ===== */
+        .bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .bg-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        /* Dark overlay for text readability */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.45) 0%,
+                rgba(0, 0, 0, 0.25) 40%,
+                rgba(0, 0, 0, 0.55) 100%
+            );
+            z-index: 1;
+        }
+
+        /* Subtle grain texture overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 0.06;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Top bar */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 3rem;
+            opacity: 0;
+            animation: fadeSlideDown 1s ease 2.8s forwards;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.3em;
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .status-dot {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-dot::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d4af37;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Horizontal line accent */
+        .line-accent {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: expandLine 1s ease 1s forwards;
+        }
+
+        /* Main headline */
+        .headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            line-height: 0.95;
+            letter-spacing: 0.04em;
+            color: #ffffff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .headline .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .headline .line span {
+            display: inline-block;
+            transform: translateY(110%);
+            animation: revealUp 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        .headline .line:nth-child(1) span {
+            animation-delay: 0.4s;
+        }
+
+        .headline .line:nth-child(2) span {
+            animation-delay: 0.65s;
+        }
+
+        /* Gold accent on key word */
+        .gold {
+            color: #d4af37;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: clamp(0.85rem, 2vw, 1.1rem);
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 1s ease 1.4s forwards;
+        }
+
+        /* Divider */
+        .divider {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(180deg, #d4af37, transparent);
+            margin: 2rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.8s forwards;
+        }
+
+        /* Under construction badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 2rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50px;
+            background: rgba(212, 175, 55, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeScaleIn 0.8s ease 2.2s forwards;
+        }
+
+        .badge-icon {
+            width: 18px;
+            height: 18px;
+            animation: spin 3s linear infinite;
+        }
+
+        .badge-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #d4af37;
+        }
+
+        /* Bottom bar */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 3rem;
+            opacity: 0;
+            animation: fadeSlideUp 1s ease 3s forwards;
+        }
+
+        .bottom-text {
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ===== FLOATING PARTICLES ===== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 25%; animation-duration: 15s; animation-delay: 2s; }
+        .particle:nth-child(3) { left: 40%; animation-duration: 10s; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 55%; animation-duration: 18s; animation-delay: 1s; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 14s; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 85%; animation-duration: 11s; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 15%; animation-duration: 16s; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 60%; animation-duration: 13s; animation-delay: 7s; }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes revealUp {
+            0% {
+                transform: translateY(110%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandLine {
+            0% {
+                width: 0;
+                opacity: 0;
+            }
+            100% {
+                width: 60px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeScaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
+            50% { opacity: 0.5; box-shadow: 0 0 20px rgba(212, 175, 55, 0.9); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 1.5rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .subtitle {
+                letter-spacing: 0.2em;
+            }
+
+            .badge {
+                padding: 0.6rem 1.5rem;
+            }
+
+            .bottom-bar {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="bg-wrapper">
+        <img src="image (3).png" alt="Background">
+    </div>
+
+    <!-- Dark Overlay -->
+    <div class="bg-overlay"></div>
+
+    <!-- Grain texture -->
+    <div class="grain-overlay"></div>
+
+    <!-- Floating particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Top navigation bar -->
+        <div class="top-bar">
+            <div class="logo">DEOS</div>
+            <div class="status-dot">Building</div>
+        </div>
+
+        <!-- Line accent -->
+        <div class="line-accent"></div>
+
+        <!-- Main headline -->
+        <h1 class="headline" id="main-headline">
+            <span class="line"><span>No Rest. Just <span class="gold">Building.</span></span></span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="subtitle" id="subtitle">Website Under Construction</p>
+
+        <!-- Vertical divider -->
+        <div class="divider"></div>
+
+        <!-- Construction badge -->
+        <div class="badge">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span class="badge-text">Coming Soon</span>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="bottom-bar">
+            <span class="bottom-text">Something extraordinary is in the works</span>
+        </div>
+    </div>
+
+    <script>
+        // Optional: subtle mouse parallax on background
+        const bgWrapper = document.querySelector('.bg-wrapper img');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            bgWrapper.style.transform = `translate(${-x}px, ${-y}px) scale(1.05)`;
+            bgWrapper.style.transition = 'transform 0.3s ease-out';
+        });
+    </script>
+</body>
+</html>
